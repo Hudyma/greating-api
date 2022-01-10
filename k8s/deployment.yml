@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greeting-api
+spec:
+  selector:
+    matchLabels:
+      app: greeting-api
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: greeting-api
+    spec:
+      containers:
+        - name: greeting-api
+          image: gcr.io/<gcp_project>/greeting-api:1.0.0
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
